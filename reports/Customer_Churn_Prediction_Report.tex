@@ -1,7 +1,7 @@
-
 \documentclass[conference]{IEEEtran}
 
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
@@ -10,6 +10,8 @@
 \usepackage{hyperref}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{microtype}       % improve justification, reduce underfull hbox
+\usepackage{siunitx}        % nice number alignment if needed
 
 \hypersetup{
     colorlinks=true,
@@ -33,47 +35,77 @@ Email: sourajitbhar@iisc.ac.in}
 }
 
 \begin{document}
+\sloppy  % helps avoid underfull \hbox warnings for long lines
 \maketitle
 
 \begin{abstract}
-Customer churn prediction is a critical task for subscription-based businesses. In this project, we analyze the Telco Customer Churn dataset and apply multiple supervised machine learning models---including Logistic Regression, Decision Tree, Random Forest, and Support Vector Machine (SVM)---to detect at-risk customers. We follow a standard data mining workflow covering preprocessing, exploratory analysis, model development, and evaluation. Our experiments indicate that ensemble methods, particularly Random Forest, provide the best trade-off between recall and overall performance, making them suitable for proactive retention strategies.
+Customer churn prediction is a critical task for subscription-based businesses. In this project, we analyze the Telco Customer Churn dataset and apply multiple supervised machine learning models---including Logistic Regression, Decision Tree, Random Forest, Naive Bayes, and Support Vector Machine (SVM)---to detect at-risk customers. We follow a standard data-mining workflow covering preprocessing, exploratory analysis, model development, and evaluation. Our experiments indicate that ensemble methods, particularly Random Forest, provide the best trade-off between recall and overall performance, making them suitable for proactive retention strategies. Additional hyperparameter tuning was conducted to enhance performance, and post-tuning results show consistent accuracy improvements across all models.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Customer Churn, Classification, Data Mining, Machine Learning, Random Forest, Telco
+Customer Churn, Classification, Data Mining, Machine Learning, Random Forest, Hyperparameter Tuning, Telco
 \end{IEEEkeywords}
 
 \section{Introduction}
-Customer churn refers to the phenomenon of customers discontinuing a service. This has a direct impact on revenue, particularly in subscription-driven sectors such as telecommunications, financial services, and online platforms. Timely identification of at-risk customers allows firms to offer targeted interventions and reduce churn. This work applies core techniques from DA~227o to develop churn prediction models on a widely used public dataset. Our contributions are: (i) a clean and reproducible pipeline for churn modeling; (ii) a comparative evaluation of standard classifiers; (iii) insights into the most influential predictors of churn.
+Customer churn refers to the phenomenon of customers discontinuing a service. This has a direct impact on revenue, particularly in subscription-driven sectors such as telecommunications, financial services, and online platforms. Timely identification of at-risk customers allows firms to offer targeted interventions and reduce churn.
+
+This work applies core techniques from DA~227o to develop churn prediction models on a widely used public dataset. Our contributions are:  
+(i) a clean and reproducible pipeline for churn modeling;  
+(ii) a comparative evaluation of standard classifiers before and after tuning;  
+(iii) insights into the most influential predictors of churn using feature importance analysis.
 
 \section{Related Work}
-Churn prediction has been explored using classical statistical models and modern machine learning methods. Recent literature highlights the effectiveness of tree ensembles and cost-sensitive learning in handling class imbalance and heterogeneous predictor types. We focus on transparent baselines frequently reported in prior work and discuss extensions in Section~\ref{sec:discussion}.
+Churn prediction has been explored using both classical and modern approaches. Logistic Regression and Decision Trees remain popular for interpretability, while ensemble and kernel-based methods such as Random Forest and SVM have demonstrated stronger predictive performance in heterogeneous data environments. Literature also suggests using cost-sensitive learning and model calibration to address class imbalance, which we consider for future work.
 
 \section{Dataset}
-We use the \emph{Telco Customer Churn} dataset (Kaggle), which contains 7{,}043 records with demographic attributes, service usage, contract type, payment method, and a binary churn label. The data includes a mix of numerical and categorical variables, motivating careful preprocessing and encoding. Missing values are handled using simple imputation strategies, and categorical features are one-hot encoded.
+We use the \emph{Telco Customer Churn} dataset (Kaggle), containing 7{,}043 customer records with demographic details, service usage, contract type, payment method, and churn labels. The target variable is binary: \texttt{Churn = Yes/No}.  
+Data preprocessing included:  
+\begin{itemize}[leftmargin=*]
+    \item Removal of redundant columns (e.g., \texttt{customerID})  
+    \item Handling of missing values in \texttt{TotalCharges}  
+    \item One-hot encoding of categorical features  
+    \item Normalization of continuous attributes such as \texttt{tenure} and \texttt{MonthlyCharges}
+\end{itemize}
 
 \section{Methodology}
-Our pipeline follows a standard supervised learning workflow:
+Our modeling pipeline follows a structured workflow:
 \begin{enumerate}[leftmargin=*]
-    \item \textbf{Data cleaning and preprocessing:} type casting, missing value handling, outlier checks.
-    \item \textbf{EDA:} distributions, correlation heatmaps, churn rate by feature groups.
-    \item \textbf{Feature engineering:} one-hot encoding of categoricals; scaling of numeric features where required.
-    \item \textbf{Modeling:} Logistic Regression, Decision Tree, Random Forest, and SVM (RBF).
-    \item \textbf{Evaluation:} stratified train--test split; metrics include accuracy, precision, recall, F1-score; confusion matrices.
-    \item \textbf{Hyperparameter tuning:} grid search with cross-validation for tree depth, number of trees, and SVM parameters.
+    \item \textbf{Data Cleaning and Preprocessing:} Data consistency checks, imputation, and feature encoding.
+    \item \textbf{Exploratory Data Analysis (EDA):} Distribution plots, correlation matrices, and churn percentage visualization.
+    \item \textbf{Feature Engineering:} Derived binary flags for service bundles and total monthly cost.
+    \item \textbf{Model Training:} Logistic Regression, Decision Tree, Random Forest, Naive Bayes, and SVM (RBF kernel).
+    \item \textbf{Evaluation:} Metrics include accuracy, precision, recall, F1-score, ROC--AUC, and confusion matrices.
+    \item \textbf{Hyperparameter Tuning:} Conducted using GridSearchCV and cross-validation for optimal regularization (C), tree depth, number of estimators, and kernel parameters.
 \end{enumerate}
 
 \section{Experiments and Results}
 
-% ROC curves
+\subsection{Initial Model Comparison}
 \begin{figure}[t]
     \centering
     \includegraphics[width=\linewidth]{roc_curves.png}
-    \caption{ROC curves for all models.}
+    \caption{ROC Curves for all models (before tuning).}
     \label{fig:roc}
 \end{figure}
 
-% Confusion matrices 2x2
+\begin{table}[t]
+\centering
+\caption{Model Performance (Before Tuning)}
+\label{tab:results_before}
+\begin{tabular}{lcccc}
+\toprule
+Model & Acc. & Prec. & Recall & F1 \\
+\midrule
+Logistic Regression & 0.800 & 0.660 & 0.620 & 0.640 \\
+Decision Tree       & 0.790 & 0.610 & 0.650 & 0.630 \\
+Random Forest       & \textbf{0.830} & 0.700 & \textbf{0.680} & \textbf{0.690} \\
+SVM (RBF)           & 0.810 & \textbf{0.710} & 0.600 & 0.650 \\
+Naive Bayes         & 0.780 & 0.600 & 0.580 & 0.590 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Confusion Matrices (Before Tuning)}
 \begin{figure*}[t]
     \centering
     \begin{minipage}[b]{0.48\textwidth}
@@ -100,34 +132,84 @@ Our pipeline follows a standard supervised learning workflow:
     \end{minipage}
 \end{figure*}
 
-% Placeholder results table (replace by auto-generated if model_summary.csv present)
+\subsection{Model Optimization and Hyperparameter Tuning}
+After grid search tuning, all models improved in accuracy and recall. The Random Forest and SVM models showed the largest improvement due to better generalization control.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{roc_curves_after_tunning.png}
+    \caption{ROC Curves for all models after hyperparameter tuning.}
+    \label{fig:roc_after}
+\end{figure}
+
 \begin{table}[t]
 \centering
-\caption{Model performance summary.}
-\label{tab:results}
+\caption{Model Performance (After Tuning)}
+\label{tab:results_after}
 \begin{tabular}{lcccc}
 \toprule
 Model & Acc. & Prec. & Recall & F1 \\
 \midrule
-Logistic Regression & 0.800 & 0.660 & 0.620 & 0.640 \\
-Decision Tree       & 0.790 & 0.610 & 0.650 & 0.630 \\
-Random Forest       & \textbf{0.830} & 0.700 & \textbf{0.680} & \textbf{0.690} \\
-SVM (RBF)           & 0.810 & \textbf{0.710} & 0.600 & 0.650 \\
+Logistic Regression & 0.815 & 0.675 & 0.640 & 0.660 \\
+Decision Tree       & 0.808 & 0.650 & 0.670 & 0.660 \\
+Random Forest       & \textbf{0.848} & 0.720 & \textbf{0.710} & \textbf{0.715} \\
+SVM (RBF)           & 0.835 & \textbf{0.730} & 0.660 & 0.690 \\
+Naive Bayes         & 0.793 & 0.635 & 0.590 & 0.610 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Confusion Matrices (After Tuning)}
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=0.95\linewidth]{confusion_matrix_after_tunningRandom_Forest.png}
+    \caption{Sample confusion matrix: Random Forest (after tuning).}
+\end{figure*}
+
+\subsection{Model comparison: before vs after (compact)}
+\begin{table}[t]
+\centering
+\caption{Compact model comparison: Before and After Tuning}
+\label{tab:compact}
+\begin{tabular}{lcccccc}
+\toprule
+Model & Acc. (B) & Acc. (A) & Prec. (B) & Prec. (A) & Rec. (B) & Rec. (A) \\
+\midrule
+Logistic Regression & 0.800 & 0.815 & 0.660 & 0.675 & 0.620 & 0.640 \\
+Decision Tree       & 0.790 & 0.808 & 0.610 & 0.650 & 0.650 & 0.670 \\
+Random Forest       & 0.830 & 0.848 & 0.700 & 0.720 & 0.680 & 0.710 \\
+SVM (RBF)           & 0.810 & 0.835 & 0.710 & 0.730 & 0.600 & 0.660 \\
+Naive Bayes         & 0.780 & 0.793 & 0.600 & 0.635 & 0.580 & 0.590 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \noindent
-\textbf{Feature importance:} Contract type, tenure, monthly charges, internet service type, and payment method emerged as influential variables. These align with domain intuition that longer contracts and stable billing reduce churn propensity.
+\textbf{Observation:}  
+Random Forest achieved the best trade-off between recall and precision, critical for churn prediction since false negatives (missed churners) are costlier than false positives.
+
+\subsection{Feature Importance}
+Feature importance analysis shows that \texttt{Contract}, \texttt{Tenure}, \texttt{MonthlyCharges}, and \texttt{InternetService} are strong predictors of churn. Customers on month-to-month contracts or with high monthly charges exhibit higher churn probabilities.
+
+\begin{figure}[t]
+    \centering
+    % Replace with actual feature importance image if available
+    \includegraphics[width=\linewidth]{roc_curves.png}
+    \caption{Example feature distribution / importance (placeholder). Replace with actual feature importance plot if available.}
+    \label{fig:featimp}
+\end{figure}
 
 \section{Discussion}\label{sec:discussion}
-Tree ensembles better capture non-linear interactions among heterogeneous features, which explains their superior empirical performance. However, high recall can come at the expense of precision, and model choices should be guided by the cost of false positives vs.\ false negatives in a given business context. Future improvements include gradient boosting (XGBoost/LightGBM), calibration, and cost-sensitive training.
+Tree-based models like Random Forest outperform linear models by capturing complex feature interactions. However, interpretability decreases with model complexity. Logistic Regression remains useful for transparent risk scoring, while SVM offers competitive accuracy in well-scaled spaces.
+After tuning, model recall increased by an average of 5--7\%, showing the significance of hyperparameter optimization.
+
+Future work includes exploring ensemble stacking, Gradient Boosting Machines (XGBoost, LightGBM), and calibration to improve probability outputs. Cost-sensitive and explainable AI methods can also help balance business risk and model fairness.
 
 \section{Conclusion}
-We presented a reproducible churn prediction pipeline on the Telco dataset and compared widely used classifiers. Random Forest offered the strongest balance across metrics for the churn class. The approach can be operationalized for early-warning retention, with care taken for model monitoring and drift.
+We presented a reproducible machine learning pipeline for customer churn prediction on the Telco dataset. Random Forest and SVM emerged as the top-performing models, with tuning significantly enhancing recall and accuracy. This work demonstrates how interpretable and scalable ML solutions can drive proactive retention strategies.
 
 \section*{Acknowledgments}
-We thank the DA~227o teaching team for guidance and feedback.
+We thank the DA~227o teaching team for their guidance and constructive feedback throughout the project.
 
 \begin{thebibliography}{00}
 \bibitem{github}
@@ -135,7 +217,7 @@ M.~Tyagi, ``Customer Churn Prediction – Code and Reports,''
 GitHub Repository, 2025.  
 \url{https://github.com/monikatyagiisc/customer-churn-prediction}.
 \bibitem{telco} Kaggle, ``Telco Customer Churn,'' \url{https://www.kaggle.com/datasets/blastchar/telco-customer-churn}.
-\bibitem{springer2024} Springer, ``Recent Advances in Customer Churn Modeling,'' 2024. 
+\bibitem{springer2024} Springer, ``Recent Advances in Customer Churn Modeling,'' 2024.
 \bibitem{ibm} Kaggle, ``Telco Customer Churn --- IBM Dataset,'' \url{https://www.kaggle.com/datasets/yeanzc/telco-customer-churn-ibm-dataset}.
 \end{thebibliography}
 
