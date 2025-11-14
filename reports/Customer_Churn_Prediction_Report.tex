@@ -8,6 +8,7 @@
 \usepackage{graphicx}
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
+\usepackage{multirow}
 \usepackage{enumitem}
 \usepackage{url}
 \usepackage{hyperref}
@@ -306,11 +307,12 @@ Hyperparameter tuning improved the performance of nearly all models except Logis
 
 \begin{table}[H]
     \centering
-    \caption{Performance Comparison (After Tuning) — Key Metrics}
+    \caption{Performance Comparison (Before and After Tuning) -- Key Metrics}
     \label{tab:perfcompare}
-    \begin{tabular}{lccccc}
+    \begin{tabular}{lcccc}
     \toprule
-    Model & Accuracy_Before & Accuracy_After & Error_Before & Error_After \\
+    \multirow{2}{*}{\textbf{Model}} & \multicolumn{2}{c}{\textbf{Accuracy}} & \multicolumn{2}{c}{\textbf{Error Rate}} \\
+     & \textbf{(Before)} & \textbf{(After)} & \textbf{(Before)} & \textbf{(After)} \\
     \midrule
     Logistic Regression & 0.8031 & 0.8031 & 0.1969 & 0.1969 \\
     Random Forest       & 0.7875 & 0.7953 & 0.2125 & 0.2047 \\
@@ -320,6 +322,9 @@ Hyperparameter tuning improved the performance of nearly all models except Logis
     \bottomrule
     \end{tabular}
     \end{table}
+    
+    
+    
 
 % -------------------------------------------------------------------
 \subsection{Business Interpretation}
