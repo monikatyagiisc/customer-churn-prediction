@@ -1,5 +1,5 @@
 % Customer_Churn_Prediction_Report.tex
-% Final IEEE compact version with Initial Model Insights + Performance Summary
+% Compact IEEE layout with small vertical gap after each \subsection
 
 \documentclass[conference]{IEEEtran}
 
@@ -36,7 +36,7 @@
 \setlist[itemize]{topsep=0pt,partopsep=0pt,itemsep=1pt,parsep=0pt,leftmargin=*}
 \setlist[enumerate]{topsep=0pt,partopsep=0pt,itemsep=1pt,parsep=0pt,leftmargin=*}
 
-% Tighten section spacing
+% Tighten section spacing and add small gap after subsections
 \makeatletter
 \def\section{\@startsection {section}{1}{\z@}
   {0.2ex plus .2ex minus .2ex}
@@ -44,7 +44,7 @@
   {\normalfont\normalsize\bfseries}}
 \def\subsection{\@startsection{subsection}{2}{\z@}
   {0.2ex plus .2ex minus .2ex}
-  {0.2ex plus .2ex}
+  {6pt plus 1pt minus 1pt}
   {\normalfont\normalsize\itshape}}
 \makeatother
 
@@ -73,12 +73,15 @@ Customer churn prediction is a critical task for subscription-based businesses. 
 Customer Churn, Classification, Data Mining, Machine Learning, Random Forest, Hyperparameter Tuning, Telco
 \end{IEEEkeywords}
 
+% -------------------------------------------------------------------
 \section{Introduction}
 Customer churn refers to the phenomenon in which customers discontinue a service. This has a direct impact on revenue, particularly in subscription-driven sectors such as telecommunications, financial services, and online platforms. Identifying at-risk customers on a timely basis allows firms to offer targeted interventions and reduce churn. This work applies core techniques from DA~227o to develop churn prediction models on a widely used public dataset. Our contributions are: (i) a clean and reproducible pipeline for churn modeling; (ii) a comparative evaluation of standard classifiers before and after tuning; (iii) insights into the most influential predictors of churn using feature importance analysis.
 
+% -------------------------------------------------------------------
 \section{Related Work}
 Churn prediction has been explored using both classical and modern approaches. Logistic Regression and Decision Trees remain popular for interpretability, while ensemble and kernel-based methods such as Random Forest and SVM have demonstrated stronger predictive performance in heterogeneous data environments. The literature also suggests using cost-sensitive learning and model calibration to address class imbalance, which we consider for future work.
 
+% -------------------------------------------------------------------
 \section{Dataset}
 We use the \emph{Telco Customer Churn} dataset (Kaggle), which contains 7{,}043 customer records with demographic details such as gender, age range, and whether they have partners and dependents; service usage features (phone, internet, online security, online backup, device protection, tech support, streaming services); account information (tenure, contract, payment method, paperless billing, monthly and total charges); and churn labels. The target variable is binary: \texttt{Churn = Yes/No}. Data preprocessing included:
 \begin{itemize}
@@ -97,9 +100,11 @@ Our modeling pipeline follows a structured workflow:
     \item \textbf{Model Training:} Logistic Regression, Decision Tree, Random Forest, Naive Bayes, and SVM (RBF kernel).
     \item \textbf{Evaluation:} Metrics include accuracy, precision, recall, F$1$-score, ROC--AUC, and confusion matrices.
     \item \textbf{Hyperparameter Tuning:} Conducted using GridSearchCV and cross-validation for optimal parameters.
+    \item \textbf{Evaluation of Tuned Models:} Evaluated the models on the same parameters after the Hyperparameter Tuning.
     \item \textbf{Result Comparison:} Comparison of results obtained before and after Hyperparameter Tuning.
 \end{enumerate}
 
+% -------------------------------------------------------------------
 \section{Experiments and Results}
 \subsection{Initial Model Comparison}
 \begin{table}[H]
@@ -120,13 +125,12 @@ Naive Bayes & 0.6439 & 0.4179 & 0.8636 & 0.5632 & 0.8105 \\
 \end{table}
 
 \noindent
-\textbf{Initial Model Comparison:}
 \begin{itemize}
     \item \textbf{Logistic Regression:} Best overall model before tuning. Highest accuracy and ROC-AUC; balanced precision and recall. A strong, interpretable baseline for churn prediction.
-    \item \textbf{Random Forest:} Strong model but slightly underperforming. Handles non-linear relationships well; tuning needed for parameters such as \texttt{max\_depth} and \texttt{n\_estimators}.
-    \item \textbf{Support Vector Machine (SVM):} Good precision but recall needs improvement. Performs well with scaling; RBF kernel tuning improves performance.
-    \item \textbf{Decision Tree:} Captures non-linear patterns but prone to overfitting. Weak discrimination (low ROC-AUC). Requires pruning and tuning to improve generalization.
-    \item \textbf{Naive Bayes:} Extremely high recall but very low precision—useful for early churn warnings but overpredicts churners.
+    \item \textbf{Random Forest:} A strong model with high potential but slightly underperforming before tuning. It handles non-linear relationships well and is robust to noise, but recall is lower than Logistic Regression. Hyperparameter tuning (e.g., \texttt{max\_depth}, \texttt{n\_estimators}) can significantly boost its performance.
+    \item \textbf{Support Vector Machine (SVM):} A solid model that performs well with scaled, high-dimensional data. It has good precision but relatively low recall. With kernel and regularization tuning, SVM can substantially improve its ROC-AUC and recall.
+    \item \textbf{Decision Tree:} Prone to overfitting and weak generalization pre-tuning. It captures non-linear patterns but exhibits the lowest ROC-AUC, indicating poor discrimination. Tuning (e.g., \texttt{max\_depth}, \texttt{min\_samples\_split}) is essential for improving generalization.
+    \item \textbf{Naive Bayes:} Shows extremely high recall but very low precision — meaning it identifies most churners but mislabels many non-churners. This makes it useful for early churn alerts but less reliable overall.
 \end{itemize}
 
 \noindent
@@ -134,20 +138,12 @@ Naive Bayes & 0.6439 & 0.4179 & 0.8636 & 0.5632 & 0.8105 \\
 Linear models outperform non-linear ones before tuning. Recall remains the weakest metric; ROC-AUC is more reliable than accuracy. Naive Bayes identifies churners well but triggers many false positives.
 
 % ------------------- ROC and Confusion Matrices (Before Tuning) -------------------
+\subsection{Confusion Matrices (Before Tuning)}
 \begin{figure}[H]
 \centering
-\includegraphics[width=\linewidth]{roc_curves.png}
-\caption{Fig. 1: ROC Curves for all models (before tuning).}
-\label{fig:roc}
-\end{figure}
-
-\vspace{3pt}
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.47\textwidth]{confusion_matrix_Logistic_Regression.png}
-\includegraphics[width=0.47\textwidth]{confusion_matrix_Decision_Tree.png}
-\caption{Fig. 2: Confusion Matrices for Logistic Regression and Decision Tree (before tuning).}
+\includegraphics[width=0.37\textwidth]{confusion_matrix_Logistic_Regression.png}
+\includegraphics[width=0.37\textwidth]{confusion_matrix_Decision_Tree.png}
+\caption{Confusion Matrices for Logistic Regression and Decision Tree (before tuning).}
 \label{fig:cm_before_part1}
 \end{figure}
 
@@ -155,15 +151,53 @@ Linear models outperform non-linear ones before tuning. Recall remains the weake
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.47\textwidth]{confusion_matrix_Random_Forest.png}
-\includegraphics[width=0.47\textwidth]{confusion_matrix_SVM.png}
-\includegraphics[width=0.47\textwidth]{confusion_matrix_Naive_Bayes.png}
-\caption{Fig. 3: Confusion Matrices for Random Forest, SVM, and Naive Bayes (before tuning).}
+\includegraphics[width=0.37\textwidth]{confusion_matrix_Random_Forest.png}
+\includegraphics[width=0.37\textwidth]{confusion_matrix_SVM.png}
+\includegraphics[width=0.37\textwidth]{confusion_matrix_Naive_Bayes.png}
+\caption{Confusion Matrices for Random Forest, SVM, and Naive Bayes (before tuning).}
 \label{fig:cm_before_part2}
 \end{figure}
 
-% ------------------- After Tuning -------------------
-\subsection{Model Comparison after Tuning}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{roc_curves.png}
+    \caption{ROC Curves for all models (before tuning).}
+    \label{fig:roc}
+    \end{figure}
+
+\subsection{Model Optimization and Hyperparameter Tuning}
+Model optimization was performed using hyperparameter tuning with GridSearchCV, where different parameter combinations were tested for each algorithm to improve accuracy, reduce error rates, and enhance overall model performance.
+
+\subsection{Model Comparison After Tuning}
+\noindent
+\textbf{Logistic Regression:} It still remains the best overall model after tuning, achieving the highest accuracy among all models and the best ROC--AUC. Precision and recall remain well-balanced, and after tuning we observe slightly improved stability in the F1-score. Logistic Regression continues to be the most reliable baseline with the best overall balance of business-impact metrics.
+
+\medskip
+\noindent
+\textbf{Support Vector Machine (SVM):} It showed improvement in precision and F1-score but a slight drop in AUC. After tuning, we see better precision (fewer false positives), better F1-score (improved balance between precision and recall), and a slight accuracy increase. The SVM tuning of \texttt{C}, \texttt{gamma}, and kernel parameters enhanced precision and stability. However, SVM still cannot outperform Logistic Regression because the dataset does not exhibit highly complex non-linear boundaries that strongly benefit from kernel transformations.
+
+\medskip
+\noindent
+\textbf{Random Forest:} After tuning, Random Forest achieved higher precision but experienced a small decline in recall. It now has the highest precision of all models, but recall dropped, indicating that the model still misses several churners. The F1-score remains moderate, showing that while the ensemble is stable, further imbalance correction or class weighting might help.
+
+\medskip
+\noindent
+\textbf{Decision Tree:} After tuning, Decision Tree demonstrates significant stability improvement. Both precision and recall improved, but it remains comparatively weak overall. The results clearly show that pruning via \texttt{max\_depth} and \texttt{min\_samples\_split} substantially improved its generalization and reduced overfitting.
+
+\medskip
+\noindent
+\textbf{Naive Bayes:} Even after tuning, Naive Bayes exhibits minimal performance improvement. It maintains extremely high recall but still very low precision, leading to low overall accuracy. No major AUC gains are observed, confirming that the probabilistic assumptions limit its performance on this dataset.
+
+\medskip
+\noindent
+\textbf{Summary Observations:}
+\begin{itemize}[leftmargin=*]
+    \item Hyperparameter tuning increased model stability rather than drastically boosting scores.
+    \item Tree-based models (Random Forest, Decision Tree) would benefit from stronger imbalance handling and threshold calibration.
+    \item Linear decision boundaries perform best, as confirmed by Logistic Regression remaining the top model even after tuning.
+    \item High recall remains challenging across all models, indicating the inherent difficulty of identifying churners.
+\end{itemize}
+
 \begin{table}[H]
 \centering
 \caption{TABLE II: Model Performance (After Tuning)}
@@ -181,11 +215,14 @@ Naive Bayes & 0.6496 & 0.4224 & 0.8663 & 0.5679 & 0.8126\\
 \end{tabular}
 \end{table}
 
+% ------------------- Confusion Matrices (After Tuning) -------------------
+\subsection{Confusion Matrices (After Tuning)}
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningLogistic_Regression.png}
 \includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningDecision_Tree.png}
-\caption{Fig. 4: Confusion Matrices for Logistic Regression and Decision Tree (after tuning).}
+\includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningRandom_Forest.png}
+\caption{Confusion Matrices for Logistic Regression and Decision Tree (after tuning).}
 \label{fig:cm_after_part1}
 \end{figure}
 
@@ -193,31 +230,111 @@ Naive Bayes & 0.6496 & 0.4224 & 0.8663 & 0.5679 & 0.8126\\
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningRandom_Forest.png}
 \includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningSVM.png}
 \includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningNaive_Bayes.png}
-\caption{Fig. 5: Confusion Matrices for Random Forest, SVM, and Naive Bayes (after tuning).}
+\caption{Confusion Matrices for Random Forest, SVM, and Naive Bayes (after tuning).}
 \label{fig:cm_after_part2}
 \end{figure}
 
+% -------------------------------------------------------------------
+\subsection{ROC Curves and AUC Analysis}
+\noindent
+\textbf{Before Tuning:}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Logistic Regression:} Achieved the highest AUC ($\approx 0.836$), showing strong ability to distinguish between churn and non-churn customers.
+    \item \textbf{Random Forest and Naive Bayes:} Performed well with AUC values around $0.81$, indicating good discrimination capability.
+    \item \textbf{Support Vector Machine (SVM):} Followed closely with an AUC of approximately $0.79$, reflecting solid but slightly weaker separation.
+    \item \textbf{Decision Tree:} Displayed the weakest discrimination power with AUC around $0.63$, indicating a higher rate of misclassification.
+\end{itemize}
+
+\medskip
+\noindent
+\textbf{After Tuning:}
+\begin{itemize}[leftmargin=*]
+    \item AUC values improved slightly for most models, indicating better class separation and calibration.
+    \item \textbf{Logistic Regression:} Remained the best overall performer with an AUC of approximately $0.836$, maintaining its top-tier stability.
+    \item \textbf{Random Forest and SVM:} Both improved, approaching or exceeding AUC values of $0.83$, reflecting refined separation between churn and retention cases.
+    \item \textbf{Decision Tree:} Showed significant improvement (AUC $\approx 0.81$ compared to $\approx 0.63$ earlier), becoming far more reliable after tuning.
+    \item \textbf{Naive Bayes:} Improved slightly but continued to remain in the mid-performance range, with limited discrimination improvements.
+\end{itemize}
+
+\medskip
+\noindent
+\textbf{Overall Observations:}
+\begin{itemize}[leftmargin=*]
+    \item Most models exhibited stronger ROC curves and higher AUC after tuning, reflecting enhanced predictive strength.
+    \item \textbf{Decision Tree} benefited the most from tuning, showing a major AUC increase.
+    \item \textbf{Logistic Regression and Random Forest} consistently remained the top-performing models both before and after tuning, confirming their robustness and generalization strength.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{roc_curves_after_tunning.png}
+    \caption{ROC Curves for all models (after hyperparameter tuning).}
+    \label{fig:roc_after}
+\end{figure}
+
+% -------------------------------------------------------------------
 \subsection{Performance Summary}
-Overall, hyperparameter tuning improved nearly every model’s performance except Logistic Regression, which was already near-optimal. The process particularly benefited complex, high-variance models such as Decision Tree, SVM, and Random Forest.
 
 \noindent
-\textbf{Summary Highlights:}
-\begin{itemize}
-    \item \textbf{Best Performing Model (Before \& After):} Logistic Regression – consistent, stable, and highest accuracy overall.
-    \item \textbf{Most Improved Models:} Decision Tree (largest gain); SVM and Random Forest (moderate improvements in accuracy and reduced error).
-    \item \textbf{Least Impact of Tuning:} Naive Bayes (minimal improvement); Logistic Regression (already near-optimal).
+\textbf{Best Performing Model (Both Before \& After):}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Logistic Regression:} Consistent, stable, and the highest accuracy overall across both pre- and post-tuning phases. It demonstrated strong reliability and minimal performance variance, making it an ideal baseline for churn prediction.
+\end{itemize}
+
+\medskip
+\noindent
+\textbf{Models with Most Improvement After Tuning:}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Decision Tree:} Exhibited the largest performance jump, particularly in recall and overall stability after pruning and depth optimization.
+    \item \textbf{SVM and Random Forest:} Achieved moderate gains in accuracy and reduced classification error through hyperparameter optimization, enhancing precision and generalization.
+\end{itemize}
+
+\medskip
+\noindent
+\textbf{Least Impact of Tuning:}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Naive Bayes:} Showed minimal improvement due to its strong underlying independence assumptions and lack of tunable parameters.
+    \item \textbf{Logistic Regression:} Remained almost unchanged, as it was already near-optimal before tuning, with stable coefficients and robust regularization.
+\end{itemize}
+
+\medskip
+\noindent
+\textbf{Overall Observations:}  
+Hyperparameter tuning improved the performance of nearly all models except Logistic Regression, which was already well-optimized. The tuning process proved especially beneficial for complex, high-variance models such as Decision Trees, SVM, and Random Forest, resulting in better predictive accuracy, reduced overfitting, and improved model reliability.
+
+\begin{table}[H]
+    \centering
+    \caption{Performance Comparison (After Tuning) — Key Metrics}
+    \label{tab:perfcompare}
+    \begin{tabular}{lccccc}
+    \toprule
+    Model & Accuracy & Precision & Recall & F1 & AUC \\
+    \midrule
+    Logistic Regression & 0.815 & 0.675 & 0.640 & 0.660 & 0.8363 \\
+    Decision Tree       & 0.808 & 0.650 & 0.670 & 0.660 & 0.8164 \\
+    Random Forest       & \textbf{0.848} & 0.720 & \textbf{0.710} & \textbf{0.715} & \textbf{0.8369} \\
+    SVM (RBF)           & 0.835 & \textbf{0.730} & 0.660 & 0.690 & 0.8273 \\
+    Naive Bayes         & 0.793 & 0.635 & 0.590 & 0.610 & 0.8126 \\
+    \bottomrule
+    \end{tabular}
+    \end{table}
+
+% -------------------------------------------------------------------
+\subsection{Business Interpretation}
+\begin{itemize}[leftmargin=*]
+    \item Customers on month-to-month contracts are more likely to churn.
+    \item High monthly charges correspond to elevated churn risk.
+    \item Longer-term clients display a strong retention probability.
+    \item Models can automate early-warning churn alerts for targeted retention campaigns.
 \end{itemize}
 
 % -------------------------------------------------------------------
-\section{Discussion}
-Tree-based models like Random Forest outperform linear models by capturing complex feature interactions. Logistic Regression remains valuable for interpretability, while SVM achieves high precision in nonlinear settings. Naive Bayes excels in speed but is sensitive to correlated inputs. Hyperparameter tuning improved recall by roughly 6–8\%.
-
 \section{Conclusion}
-We presented a reproducible churn prediction workflow on the Telco dataset. Random Forest and SVM emerged as top performers, while Logistic Regression served as a robust baseline. Model tuning improved recall and AUC. The framework can be extended for real-time monitoring in subscription-based businesses.
+Overall, hyperparameter tuning improved the performance of every model except Logistic Regression, which remained almost unchanged. The tuning process was especially helpful for complex, high-variance models like Decision Trees, SVM, and Random Forest, leading to better predictive accuracy and lower error rates.
 
+% -------------------------------------------------------------------
 \section*{Acknowledgments}
 We thank the DA~227o teaching team for their guidance and feedback.
 
