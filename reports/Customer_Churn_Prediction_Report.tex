@@ -310,13 +310,13 @@ Hyperparameter tuning improved the performance of nearly all models except Logis
     \label{tab:perfcompare}
     \begin{tabular}{lccccc}
     \toprule
-    Model & Accuracy & Precision & Recall & F1 & AUC \\
+    Model & Accuracy_Before & Accuracy_After & Error_Before & Error_After \\
     \midrule
-    Logistic Regression & 0.815 & 0.675 & 0.640 & 0.660 & 0.8363 \\
-    Decision Tree       & 0.808 & 0.650 & 0.670 & 0.660 & 0.8164 \\
-    Random Forest       & \textbf{0.848} & 0.720 & \textbf{0.710} & \textbf{0.715} & \textbf{0.8369} \\
-    SVM (RBF)           & 0.835 & \textbf{0.730} & 0.660 & 0.690 & 0.8273 \\
-    Naive Bayes         & 0.793 & 0.635 & 0.590 & 0.610 & 0.8126 \\
+    Logistic Regression & 0.8031 & 0.8031 & 0.1969 & 0.1969 \\
+    Random Forest       & 0.7875 & 0.7953 & 0.2125 & 0.2047 \\
+    SVM (RBF)           & 0.7868 & 0.7989 & 0.2132 & 0.2011 \\
+    Decision Tree       & 0.7186 & 0.7754 & 0.2815 & 0.2246 \\
+    Naive Bayes         & 0.6439 & 0.6496 & 0.3561 & 0.3504 \\
     \bottomrule
     \end{tabular}
     \end{table}
