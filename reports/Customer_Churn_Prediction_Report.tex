@@ -1,5 +1,5 @@
 % Customer_Churn_Prediction_Report.tex
-% Final compact IEEE version with Fig. 3 in column layout
+% Final IEEE compact version with Initial Model Insights + Performance Summary
 
 \documentclass[conference]{IEEEtran}
 
@@ -119,36 +119,50 @@ Naive Bayes & 0.6439 & 0.4179 & 0.8636 & 0.5632 & 0.8105 \\
 \end{tabular}
 \end{table}
 
+\noindent
+\textbf{Initial Model Comparison:}
+\begin{itemize}
+    \item \textbf{Logistic Regression:} Best overall model before tuning. Highest accuracy and ROC-AUC; balanced precision and recall. A strong, interpretable baseline for churn prediction.
+    \item \textbf{Random Forest:} Strong model but slightly underperforming. Handles non-linear relationships well; tuning needed for parameters such as \texttt{max\_depth} and \texttt{n\_estimators}.
+    \item \textbf{Support Vector Machine (SVM):} Good precision but recall needs improvement. Performs well with scaling; RBF kernel tuning improves performance.
+    \item \textbf{Decision Tree:} Captures non-linear patterns but prone to overfitting. Weak discrimination (low ROC-AUC). Requires pruning and tuning to improve generalization.
+    \item \textbf{Naive Bayes:} Extremely high recall but very low precision—useful for early churn warnings but overpredicts churners.
+\end{itemize}
+
+\noindent
+\textbf{Summary:}
+Linear models outperform non-linear ones before tuning. Recall remains the weakest metric; ROC-AUC is more reliable than accuracy. Naive Bayes identifies churners well but triggers many false positives.
+
 % ------------------- ROC and Confusion Matrices (Before Tuning) -------------------
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=\linewidth]{roc_curves.png}
-    \caption{Fig. 1: ROC Curves for all models (before tuning).}
-    \label{fig:roc}
-    \end{figure}
-    
-    \vspace{3pt}
-    
-    \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.47\textwidth]{confusion_matrix_Logistic_Regression.png}
-    \includegraphics[width=0.47\textwidth]{confusion_matrix_Decision_Tree.png}
-    \caption{Fig. 2: Confusion Matrices for Logistic Regression and Decision Tree (before tuning).}
-    \label{fig:cm_before_part1}
-    \end{figure}
-    
-    \vspace{2pt}
-    
-    \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.47\textwidth]{confusion_matrix_Random_Forest.png}
-    \includegraphics[width=0.47\textwidth]{confusion_matrix_SVM.png}
-    \includegraphics[width=0.47\textwidth]{confusion_matrix_Naive_Bayes.png}
-    \caption{Fig. 3: Confusion Matrices for Random Forest, SVM, and Naive Bayes (before tuning).}
-    \label{fig:cm_before_part2}
-    \end{figure}
-    
+\centering
+\includegraphics[width=\linewidth]{roc_curves.png}
+\caption{Fig. 1: ROC Curves for all models (before tuning).}
+\label{fig:roc}
+\end{figure}
 
+\vspace{3pt}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.47\textwidth]{confusion_matrix_Logistic_Regression.png}
+\includegraphics[width=0.47\textwidth]{confusion_matrix_Decision_Tree.png}
+\caption{Fig. 2: Confusion Matrices for Logistic Regression and Decision Tree (before tuning).}
+\label{fig:cm_before_part1}
+\end{figure}
+
+\vspace{2pt}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.47\textwidth]{confusion_matrix_Random_Forest.png}
+\includegraphics[width=0.47\textwidth]{confusion_matrix_SVM.png}
+\includegraphics[width=0.47\textwidth]{confusion_matrix_Naive_Bayes.png}
+\caption{Fig. 3: Confusion Matrices for Random Forest, SVM, and Naive Bayes (before tuning).}
+\label{fig:cm_before_part2}
+\end{figure}
+
+% ------------------- After Tuning -------------------
 \subsection{Model Comparison after Tuning}
 \begin{table}[H]
 \centering
@@ -167,27 +181,37 @@ Naive Bayes & 0.6496 & 0.4224 & 0.8663 & 0.5679 & 0.8126\\
 \end{tabular}
 \end{table}
 
-% ------------------- Confusion Matrices (After Tuning) -------------------
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningLogistic_Regression.png}
-    \includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningDecision_Tree.png}
-    \caption{Fig. 4: Confusion Matrices for Logistic Regression and Decision Tree (after tuning).}
-    \label{fig:cm_after_part1}
-    \end{figure}
-    
-    \vspace{2pt}
-    
-    \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningRandom_Forest.png}
-    \includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningSVM.png}
-    \includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningNaive_Bayes.png}
-    \caption{Fig. 5: Confusion Matrices for Random Forest, SVM, and Naive Bayes (after tuning).}
-    \label{fig:cm_after_part2}
-    \end{figure}
-    
+\centering
+\includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningLogistic_Regression.png}
+\includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningDecision_Tree.png}
+\caption{Fig. 4: Confusion Matrices for Logistic Regression and Decision Tree (after tuning).}
+\label{fig:cm_after_part1}
+\end{figure}
 
+\vspace{2pt}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningRandom_Forest.png}
+\includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningSVM.png}
+\includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningNaive_Bayes.png}
+\caption{Fig. 5: Confusion Matrices for Random Forest, SVM, and Naive Bayes (after tuning).}
+\label{fig:cm_after_part2}
+\end{figure}
+
+\subsection{Performance Summary}
+Overall, hyperparameter tuning improved nearly every model’s performance except Logistic Regression, which was already near-optimal. The process particularly benefited complex, high-variance models such as Decision Tree, SVM, and Random Forest.
+
+\noindent
+\textbf{Summary Highlights:}
+\begin{itemize}
+    \item \textbf{Best Performing Model (Before \& After):} Logistic Regression – consistent, stable, and highest accuracy overall.
+    \item \textbf{Most Improved Models:} Decision Tree (largest gain); SVM and Random Forest (moderate improvements in accuracy and reduced error).
+    \item \textbf{Least Impact of Tuning:} Naive Bayes (minimal improvement); Logistic Regression (already near-optimal).
+\end{itemize}
+
+% -------------------------------------------------------------------
 \section{Discussion}
 Tree-based models like Random Forest outperform linear models by capturing complex feature interactions. Logistic Regression remains valuable for interpretability, while SVM achieves high precision in nonlinear settings. Naive Bayes excels in speed but is sensitive to correlated inputs. Hyperparameter tuning improved recall by roughly 6–8\%.
 
