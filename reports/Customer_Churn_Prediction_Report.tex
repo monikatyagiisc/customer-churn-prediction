@@ -110,7 +110,7 @@ Our modeling pipeline follows a structured workflow:
 \subsection{Initial Model Comparison}
 \begin{table}[H]
 \centering
-\caption{TABLE I: Model Performance (Before Tuning)}
+\caption{Model Performance (Before Tuning)}
 \label{tab:results_before}
 \begin{tabular}{llllll}
 \toprule
@@ -201,7 +201,7 @@ Model optimization was performed using hyperparameter tuning with GridSearchCV, 
 
 \begin{table}[H]
 \centering
-\caption{TABLE II: Model Performance (After Tuning)}
+\caption{Model Performance (After Tuning)}
 \label{tab:results_after}
 \begin{tabular}{llllll}
 \toprule
@@ -223,7 +223,7 @@ Naive Bayes & 0.6496 & 0.4224 & 0.8663 & 0.5679 & 0.8126\\
 \includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningLogistic_Regression.png}
 \includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningDecision_Tree.png}
 \includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningRandom_Forest.png}
-\caption{Confusion Matrices for Logistic Regression and Decision Tree (after tuning).}
+\caption{Confusion Matrices for Logistic Regression, Decision Tree and Random Forest (after tuning).}
 \label{fig:cm_after_part1}
 \end{figure}
 
@@ -233,7 +233,7 @@ Naive Bayes & 0.6496 & 0.4224 & 0.8663 & 0.5679 & 0.8126\\
 \centering
 \includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningSVM.png}
 \includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningNaive_Bayes.png}
-\caption{Confusion Matrices for Random Forest, SVM, and Naive Bayes (after tuning).}
+\caption{Confusion Matrices for SVM, and Naive Bayes (after tuning).}
 \label{fig:cm_after_part2}
 \end{figure}
 
