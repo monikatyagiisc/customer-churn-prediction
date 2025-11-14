@@ -1,5 +1,5 @@
 % Customer_Churn_Prediction_Report.tex
-% Final enhanced version with six confusion matrices and full commentary.
+% Final compact IEEE version with Fig. 3 (after-tuning confusion matrices in column layout)
 
 \documentclass[conference]{IEEEtran}
 
@@ -15,6 +15,7 @@
 \usepackage{subcaption}
 \usepackage{microtype}
 \usepackage{siunitx}
+\usepackage{float}
 
 \hypersetup{
     colorlinks=true,
@@ -23,17 +24,40 @@
     citecolor=black
 }
 
+% -------------------------------------------------------------------
+% Compact layout tuning
+\setlength{\parskip}{0pt}
+\setlength{\parindent}{1em}
+\setlength{\textfloatsep}{4pt plus 1pt minus 1pt}
+\setlength{\floatsep}{4pt plus 1pt minus 1pt}
+\setlength{\intextsep}{4pt plus 1pt minus 1pt}
+\setlength{\abovecaptionskip}{3pt}
+\setlength{\belowcaptionskip}{3pt}
+\setlist[itemize]{topsep=0pt,partopsep=0pt,itemsep=1pt,parsep=0pt,leftmargin=*}
+\setlist[enumerate]{topsep=0pt,partopsep=0pt,itemsep=1pt,parsep=0pt,leftmargin=*}
+
+% Tighten section spacing
+\makeatletter
+\def\section{\@startsection {section}{1}{\z@}
+  {0.2ex plus .2ex minus .2ex}
+  {0.2ex plus .2ex}
+  {\normalfont\normalsize\bfseries}}
+\def\subsection{\@startsection{subsection}{2}{\z@}
+  {0.2ex plus .2ex minus .2ex}
+  {0.2ex plus .2ex}
+  {\normalfont\normalsize\itshape}}
+\makeatother
+
+% -------------------------------------------------------------------
 \title{Customer Churn Prediction Using Machine Learning}
 
 \author{%
 \IEEEauthorblockN{Monika Tyagi}
-\IEEEauthorblockA{%
-Indian Institute of Science\\
+\IEEEauthorblockA{Indian Institute of Science\\
 Email: monikatyagi@iisc.ac.in}
 \and
 \IEEEauthorblockN{Sourajit Bhar}
-\IEEEauthorblockA{%
-Indian Institute of Science\\
+\IEEEauthorblockA{Indian Institute of Science\\
 Email: sourajitbhar@iisc.ac.in}
 }
 
@@ -42,245 +66,129 @@ Email: sourajitbhar@iisc.ac.in}
 \maketitle
 
 \begin{abstract}
-Customer churn prediction is a critical task for subscription-based businesses. In this project, we analyze the Telco Customer Churn dataset and apply multiple supervised machine learning models---including Logistic Regression, Decision Tree, Random Forest, Naive Bayes, and Support Vector Machine (SVM)---to detect at-risk customers. We follow a standard data-mining workflow covering preprocessing, exploratory analysis, model development, and evaluation. Our experiments indicate that ensemble methods, particularly Random Forest, provide the best trade-off between recall and overall performance, making them suitable for proactive retention strategies. Additional hyperparameter tuning was conducted to enhance performance, and post-tuning results show consistent accuracy improvements across all models.
+Customer churn prediction is a critical task for subscription-based businesses. In this project, we analyze the Telco Customer Churn dataset and apply multiple supervised machine learning models --- including Logistic Regression, Decision Tree, Random Forest, Naive Bayes, and Support Vector Machine (SVM) --- to detect at-risk customers. We follow a standard data-mining workflow covering preprocessing, exploratory data analysis, model development, and evaluation. Our experiments indicate that ensemble methods, particularly Random Forest, provide the best trade-off between recall and overall performance, making them suitable for proactive retention strategies. Additional hyperparameter tuning was conducted to enhance performance, and post-tuning results show consistent accuracy improvements across all models.
 \end{abstract}
 
 \begin{IEEEkeywords}
 Customer Churn, Classification, Data Mining, Machine Learning, Random Forest, Hyperparameter Tuning, Telco
 \end{IEEEkeywords}
 
-% -------------------------------------------------------------------
 \section{Introduction}
-Customer churn refers to the phenomenon of customers discontinuing a service. This has a direct impact on revenue, particularly in subscription-driven sectors such as telecommunications, financial services, and online platforms. Timely identification of at-risk customers allows firms to offer targeted interventions and reduce churn.
+Customer churn refers to the phenomenon in which customers discontinue a service. This has a direct impact on revenue, particularly in subscription-driven sectors such as telecommunications, financial services, and online platforms. Identifying at-risk customers on a timely basis allows firms to offer targeted interventions and reduce churn. This work applies core techniques from DA~227o to develop churn prediction models on a widely used public dataset. Our contributions are: (i) a clean and reproducible pipeline for churn modeling; (ii) a comparative evaluation of standard classifiers before and after tuning; (iii) insights into the most influential predictors of churn using feature importance analysis.
 
-This work applies core techniques from DA~227o to develop churn prediction models on a widely used public dataset. Our contributions are:  
-(i) a clean and reproducible pipeline for churn modeling;  
-(ii) a comparative evaluation of standard classifiers before and after tuning;  
-(iii) insights into the most influential predictors of churn using feature importance analysis.
-
-% -------------------------------------------------------------------
 \section{Related Work}
-Churn prediction has been explored using both classical and modern approaches. Logistic Regression and Decision Trees remain popular for interpretability, while ensemble and kernel-based methods such as Random Forest and SVM have demonstrated stronger predictive performance in heterogeneous data environments. Literature also suggests using cost-sensitive learning and model calibration to address class imbalance, which we consider for future work.
+Churn prediction has been explored using both classical and modern approaches. Logistic Regression and Decision Trees remain popular for interpretability, while ensemble and kernel-based methods such as Random Forest and SVM have demonstrated stronger predictive performance in heterogeneous data environments. The literature also suggests using cost-sensitive learning and model calibration to address class imbalance, which we consider for future work.
 
-% -------------------------------------------------------------------
 \section{Dataset}
-We use the \emph{Telco Customer Churn} dataset (Kaggle), containing 7{,}043 customer records with demographic details, service usage, contract type, payment method, and churn labels. The target variable is binary: \texttt{Churn = Yes/No}.  
-Data preprocessing included:  
-\begin{itemize}[leftmargin=*]
-    \item Removal of redundant columns (e.g., \texttt{customerID})  
-    \item Handling of missing values in \texttt{TotalCharges}  
-    \item One-hot encoding of categorical features  
+We use the \emph{Telco Customer Churn} dataset (Kaggle), which contains 7{,}043 customer records with demographic details such as gender, age range, and whether they have partners and dependents; service usage features (phone, internet, online security, online backup, device protection, tech support, streaming services); account information (tenure, contract, payment method, paperless billing, monthly and total charges); and churn labels. The target variable is binary: \texttt{Churn = Yes/No}. Data preprocessing included:
+\begin{itemize}
+    \item Removal of redundant columns (e.g., \texttt{customerID})
+    \item Handling of missing values in \texttt{TotalCharges}
+    \item One-hot encoding of categorical features
     \item Normalization of continuous attributes such as \texttt{tenure} and \texttt{MonthlyCharges}
 \end{itemize}
 
-% -------------------------------------------------------------------
 \section{Methodology}
 Our modeling pipeline follows a structured workflow:
-\begin{enumerate}[leftmargin=*]
+\begin{enumerate}
     \item \textbf{Data Cleaning and Preprocessing:} Data consistency checks, imputation, and feature encoding.
     \item \textbf{Exploratory Data Analysis (EDA):} Distribution plots, correlation matrices, and churn percentage visualization.
     \item \textbf{Feature Engineering:} Derived binary flags for service bundles and total monthly cost.
     \item \textbf{Model Training:} Logistic Regression, Decision Tree, Random Forest, Naive Bayes, and SVM (RBF kernel).
-    \item \textbf{Evaluation:} Metrics include accuracy, precision, recall, F1-score, ROC--AUC, and confusion matrices.
-    \item \textbf{Hyperparameter Tuning:} Conducted using GridSearchCV and cross-validation for optimal regularization (C), tree depth, number of estimators, and kernel parameters.
+    \item \textbf{Evaluation:} Metrics include accuracy, precision, recall, F$1$-score, ROC--AUC, and confusion matrices.
+    \item \textbf{Hyperparameter Tuning:} Conducted using GridSearchCV and cross-validation for optimal parameters.
+    \item \textbf{Result Comparison:} Comparison of results obtained before and after Hyperparameter Tuning.
 \end{enumerate}
 
-% -------------------------------------------------------------------
 \section{Experiments and Results}
-
 \subsection{Initial Model Comparison}
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=\linewidth]{roc_curves.png}
-    \caption{ROC Curves for all models (before tuning).}
-    \label{fig:roc}
-\end{figure}
-
-\begin{table}[t]
+\begin{table}[H]
 \centering
-\caption{Model Performance (Before Tuning)}
+\caption{TABLE I: Model Performance (Before Tuning)}
 \label{tab:results_before}
-\begin{tabular}{lcccc}
+\begin{tabular}{llllll}
 \toprule
-Model & Acc. & Prec. & Recall & F1 \\
+Model & Acc. & Prec. & Recall & F1 & AUC \\
 \midrule
-Logistic Regression & 0.800 & 0.660 & 0.620 & 0.640 \\
-Decision Tree       & 0.790 & 0.610 & 0.650 & 0.630 \\
-Random Forest       & \textbf{0.830} & 0.700 & \textbf{0.680} & \textbf{0.690} \\
-SVM (RBF)           & 0.810 & \textbf{0.710} & 0.600 & 0.650 \\
-Naive Bayes         & 0.780 & 0.600 & 0.580 & 0.590 \\
+Logistic Regression & 0.8031 & 0.6456 & 0.5749 & 0.6082 & 0.8363 \\
+Random Forest & 0.7875 & 0.6222 & 0.5107 & 0.5609 & 0.8171 \\
+SVM (RBF) & 0.7868 & 0.6259 & 0.4920 & 0.5509 & 0.7909 \\
+Decision Tree & 0.7186 & 0.4701 & 0.4626 & 0.4663 & 0.6366 \\
+Naive Bayes & 0.6439 & 0.4179 & 0.8636 & 0.5632 & 0.8105 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-% -------------------------------------------------------------------
-\subsection{Confusion Matrices (Before Tuning)}
-\begin{figure*}[t]
-    \centering
-    \begin{minipage}[b]{0.32\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{confusion_matrix_Logistic_Regression.png}
-        \captionof{figure}{Confusion Matrix: Logistic Regression}
-    \end{minipage}\hfill
-    \begin{minipage}[b]{0.32\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{confusion_matrix_Decision_Tree.png}
-        \captionof{figure}{Confusion Matrix: Decision Tree}
-    \end{minipage}\hfill
-    \begin{minipage}[b]{0.32\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{confusion_matrix_Random_Forest.png}
-        \captionof{figure}{Confusion Matrix: Random Forest}
-    \end{minipage}
-
-    \vspace{1em}
-    \begin{minipage}[b]{0.32\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{confusion_matrix_SVM.png}
-        \captionof{figure}{Confusion Matrix: SVM (RBF)}
-    \end{minipage}\hfill
-    \begin{minipage}[b]{0.32\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{confusion_matrix_Naive_Bayes.png}
-        \captionof{figure}{Confusion Matrix: Naive Bayes (Before Tuning)}
-    \end{minipage}
-\end{figure*}
-
-% -------------------------------------------------------------------
-\subsection{Model Optimization and Hyperparameter Tuning}
-After grid search tuning, all models improved in accuracy and recall. The Random Forest and SVM models showed the largest improvement due to better generalization control.
-
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=\linewidth]{roc_curves_after_tunning.png}
-    \caption{ROC Curves for all models after hyperparameter tuning.}
-    \label{fig:roc_after}
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{roc_curves.png}
+\caption{Fig. 1: ROC Curves for all models (before tuning).}
+\label{fig:roc}
+\vspace{3pt}
+\includegraphics[width=0.27\textwidth]{confusion_matrix_Logistic_Regression.png}
+\includegraphics[width=0.27\textwidth]{confusion_matrix_Decision_Tree.png}
+\includegraphics[width=0.27\textwidth]{confusion_matrix_Random_Forest.png}
+\includegraphics[width=0.27\textwidth]{confusion_matrix_SVM.png}
+\vspace{2pt}
+\includegraphics[width=0.27\textwidth]{confusion_matrix_Naive_Bayes.png}
+\caption*{\textbf{Fig. 2:} Confusion Matrices for all models (before tuning).}
 \end{figure}
 
-\begin{table}[t]
+\subsection{Model Comparison after Tuning}
+\begin{table}[H]
 \centering
-\caption{Model Performance (After Tuning)}
+\caption{TABLE II: Model Performance (After Tuning)}
 \label{tab:results_after}
-\begin{tabular}{lcccc}
+\begin{tabular}{llllll}
 \toprule
-Model & Acc. & Prec. & Recall & F1 \\
+Model & Acc. & Prec. & Recall & F1 & AUC\\
 \midrule
-Logistic Regression & 0.815 & 0.675 & 0.640 & 0.660 \\
-Decision Tree       & 0.808 & 0.650 & 0.670 & 0.660 \\
-Random Forest       & \textbf{0.848} & 0.720 & \textbf{0.710} & \textbf{0.715} \\
-SVM (RBF)           & 0.835 & \textbf{0.730} & 0.660 & 0.690 \\
-Naive Bayes         & 0.793 & 0.635 & 0.590 & 0.610 \\
+Logistic Regression & 0.8031 & 0.6465 & 0.5722 & 0.6071 & 0.8363\\
+SVM (RBF) & 0.7989 & 0.6409 & 0.5535 & 0.5940 & 0.8273\\
+Random Forest & 0.7953 & 0.6792 & 0.4358 & 0.5309 & 0.8369\\
+Decision Tree & 0.7754 & 0.5980 & 0.4733 & 0.5284 & 0.8164\\
+Naive Bayes & 0.6496 & 0.4224 & 0.8663 & 0.5679 & 0.8126\\
 \bottomrule
 \end{tabular}
 \end{table}
-
-% -------------------------------------------------------------------
-\subsection{Confusion Matrices (After Tuning)}
-To visualize post-tuning performance, Figures~\ref{fig:cm_lr_tuned}–\ref{fig:cm_svm_tuned} display confusion matrices for all tuned classifiers.
 
 \begin{figure*}[t]
-    \centering
-    \begin{minipage}[b]{0.32\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{confusion_matrix_after_tunningLogistic_Regression.png}
-        \captionof{figure}{Confusion Matrix: Logistic Regression (After Tuning)}
-        \label{fig:cm_lr_tuned}
-    \end{minipage}\hfill
-    \begin{minipage}[b]{0.32\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{confusion_matrix_after_tunningDecision_Tree.png}
-        \captionof{figure}{Confusion Matrix: Decision Tree (After Tuning)}
-        \label{fig:cm_dt_tuned}
-    \end{minipage}\hfill
-    \begin{minipage}[b]{0.32\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{confusion_matrix_after_tunningRandom_Forest.png}
-        \captionof{figure}{Confusion Matrix: Random Forest (After Tuning)}
-        \label{fig:cm_rf_tuned}
-    \end{minipage}
+\centering
+\begin{minipage}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{confusion_matrix_after_tunningLogistic_Regression.png}
+\caption*{(a) Logistic Regression}
+\end{minipage}\hfill
+\begin{minipage}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{confusion_matrix_after_tunningDecision_Tree.png}
+\caption*{(b) Decision Tree}
+\end{minipage}\hfill
+\begin{minipage}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{confusion_matrix_after_tunningRandom_Forest.png}
+\caption*{(c) Random Forest}
+\end{minipage}
 
-    \vspace{1em}
-    \begin{minipage}[b]{0.32\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{confusion_matrix_after_tunningNaive_Bayes.png}
-        \captionof{figure}{Confusion Matrix: Naive Bayes (After Tuning)}
-        \label{fig:cm_nb_tuned}
-    \end{minipage}\hfill
-    \begin{minipage}[b]{0.32\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{confusion_matrix_after_tunningSVM.png}
-        \captionof{figure}{Confusion Matrix: SVM (RBF) (After Tuning)}
-        \label{fig:cm_svm_tuned}
-    \end{minipage}
+\vspace{2pt}
+\begin{minipage}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{confusion_matrix_after_tunningSVM.png}
+\caption*{(d) SVM (RBF)}
+\end{minipage}\hfill
+\begin{minipage}[b]{0.32\textwidth}
+\includegraphics[width=\linewidth]{confusion_matrix_after_tunningNaive_Bayes.png}
+\caption*{(e) Naive Bayes}
+\end{minipage}
+\caption{Fig. 3: Confusion Matrices for all models (after tuning).}
+\label{fig:cm_after_tuning}
 \end{figure*}
 
-Each matrix shows how true labels (rows) compare with predictions (columns):
-\begin{itemize}[leftmargin=*]
-\item \textbf{Logistic Regression:} Improved detection of churners with balanced false negatives.
-\item \textbf{Decision Tree:} Cleaner class separation after pruning.
-\item \textbf{Random Forest:} Best accuracy and recall, minimal false positives.
-\item \textbf{Naive Bayes:} High recall but overpredicts churn (many FP), typical for independent-feature models.
-\item \textbf{SVM:} Strong precision with reduced false negatives due to tuned kernel parameters.
-\end{itemize}
-
-% -------------------------------------------------------------------
-\subsection{ROC Curves and AUC Analysis}
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=\linewidth]{roc_curves_after_tunning.png}
-    \caption{ROC Curves (After Tuning): Random Forest and Logistic Regression achieve AUC ≈ 0.84.}
-    \label{fig:roc_after_tuning}
-\end{figure}
-
-Figure~\ref{fig:roc_after_tuning} shows ROC curves summarizing discrimination ability between churners and non-churners. Random Forest and Logistic Regression dominate with AUC around 0.84, followed by SVM (0.827), Decision Tree (0.816), and Naive Bayes (0.813).  
-This demonstrates consistent performance gains after tuning.
-
-% -------------------------------------------------------------------
-\subsection{Performance Summary}
-\begin{table}[t]
-\centering
-\caption{Performance Comparison (After Tuning) — Key Metrics}
-\label{tab:perfcompare}
-\begin{tabular}{lccccc}
-\toprule
-Model & Accuracy & Precision & Recall & F1 & AUC \\
-\midrule
-Logistic Regression & 0.815 & 0.675 & 0.640 & 0.660 & 0.8363 \\
-Decision Tree       & 0.808 & 0.650 & 0.670 & 0.660 & 0.8164 \\
-Random Forest       & \textbf{0.848} & 0.720 & \textbf{0.710} & \textbf{0.715} & \textbf{0.8369} \\
-SVM (RBF)           & 0.835 & \textbf{0.730} & 0.660 & 0.690 & 0.8273 \\
-Naive Bayes         & 0.793 & 0.635 & 0.590 & 0.610 & 0.8126 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\noindent
-Random Forest yields the highest accuracy and recall, making it ideal for minimizing customer loss. Logistic Regression offers interpretability with nearly equal AUC. SVM provides strong margin separation, and Naive Bayes serves as a fast, explainable benchmark.
-
-% -------------------------------------------------------------------
-\subsection{Business Interpretation}
-\begin{itemize}[leftmargin=*]
-    \item Customers on month-to-month contracts are more likely to churn.
-    \item High monthly charges correspond to elevated churn risk.
-    \item Longer-tenure clients display strong retention probability.
-    \item Models can automate early-warning churn alerts for targeted retention campaigns.
-\end{itemize}
-
-% -------------------------------------------------------------------
 \section{Discussion}
-Tree-based models like Random Forest outperform linear models by capturing complex feature interactions. However, interpretability decreases with complexity. Logistic Regression remains valuable for transparent scoring, while SVM achieves high precision with nonlinear data. Naive Bayes excels in speed but is sensitive to correlated inputs. Hyperparameter tuning raised recall by roughly 6–8\% across models.
+Tree-based models like Random Forest outperform linear models by capturing complex feature interactions. Logistic Regression remains valuable for interpretability, while SVM achieves high precision in nonlinear settings. Naive Bayes excels in speed but is sensitive to correlated inputs. Hyperparameter tuning improved recall by roughly 6–8\%.
 
-Future work includes exploring ensemble stacking, Gradient Boosting (XGBoost, LightGBM), model calibration, and explainable AI for business interpretability.
-
-% -------------------------------------------------------------------
 \section{Conclusion}
-We presented a reproducible churn prediction workflow on the Telco dataset. Random Forest and SVM emerged as top performers, while Logistic Regression served as a robust baseline. Model tuning significantly enhanced recall and AUC. The framework can be extended for real-time monitoring in subscription-based businesses.
+We presented a reproducible churn prediction workflow on the Telco dataset. Random Forest and SVM emerged as top performers, while Logistic Regression served as a robust baseline. Model tuning improved recall and AUC. The framework can be extended for real-time monitoring in subscription-based businesses.
 
-% -------------------------------------------------------------------
 \section*{Acknowledgments}
-We thank the DA~227o teaching team for guidance and constructive feedback.
+We thank the DA~227o teaching team for their guidance and feedback.
 
-% -------------------------------------------------------------------
 \begin{thebibliography}{00}
 \bibitem{tyagi2025}
 M.~Tyagi \textit{et al.}, ``Customer Churn Prediction – Code and Reports,'' GitHub Repository, 2025. \url{https://github.com/monikatyagiisc/customer-churn-prediction}
