@@ -154,10 +154,11 @@ Naive Bayes & 0.6496 & 0.4224 & 0.8663 & 0.5679 & 0.8126\\
 % -------- Fig. 3: Confusion matrices (after tuning) in 2-column layout ----------
 \begin{figure}[H]
 \centering
+
 \begin{minipage}[b]{0.30\linewidth}
-\includegraphics[width=\linewidth]{confusion_matrix_after_tunningLogistic_Regression.png}
-\caption*{(a) Logistic Regression}
-\end{minipage}\hfill
+    \includegraphics[width=\linewidth]{confusion_matrix_after_tunningNaive_Bayes.png}
+    \caption*{(e) Naive Bayes}
+    \end{minipage}
 \begin{minipage}[b]{0.30\linewidth}
 \includegraphics[width=\linewidth]{confusion_matrix_after_tunningDecision_Tree.png}
 \caption*{(b) Decision Tree}
@@ -170,13 +171,14 @@ Naive Bayes & 0.6496 & 0.4224 & 0.8663 & 0.5679 & 0.8126\\
 \vspace{2pt}
 
 \begin{minipage}[b]{0.30\linewidth}
+    \includegraphics[width=\linewidth]{confusion_matrix_after_tunningLogistic_Regression.png}
+    \caption*{(a) Logistic Regression}
+    \end{minipage}\hfill
+\begin{minipage}[b]{0.30\linewidth}
 \includegraphics[width=\linewidth]{confusion_matrix_after_tunningSVM.png}
 \caption*{(d) SVM (RBF)}
 \end{minipage}\hfill
-\begin{minipage}[b]{0.30\linewidth}
-\includegraphics[width=\linewidth]{confusion_matrix_after_tunningNaive_Bayes.png}
-\caption*{(e) Naive Bayes}
-\end{minipage}
+
 
 \caption{Fig. 3: Confusion Matrices for all models (after tuning).}
 \label{fig:cm_after_tuning}
