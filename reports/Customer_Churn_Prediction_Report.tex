@@ -119,19 +119,35 @@ Naive Bayes & 0.6439 & 0.4179 & 0.8636 & 0.5632 & 0.8105 \\
 \end{tabular}
 \end{table}
 
+% ------------------- ROC and Confusion Matrices (Before Tuning) -------------------
 \begin{figure}[H]
-\centering
-\includegraphics[width=\linewidth]{roc_curves.png}
-\caption{Fig. 1: ROC Curves for all models (before tuning).}
-\label{fig:roc}
-\vspace{3pt}
-\includegraphics[width=0.27\textwidth]{confusion_matrix_Logistic_Regression.png}
-\includegraphics[width=0.27\textwidth]{confusion_matrix_Decision_Tree.png}
-\includegraphics[width=0.27\textwidth]{confusion_matrix_Random_Forest.png}
-\includegraphics[width=0.27\textwidth]{confusion_matrix_SVM.png}
-\includegraphics[width=0.27\textwidth]{confusion_matrix_Naive_Bayes.png}
-\caption*{\textbf{Fig. 2:} Confusion Matrices for all models (before tuning).}
-\end{figure}
+    \centering
+    \includegraphics[width=\linewidth]{roc_curves.png}
+    \caption{Fig. 1: ROC Curves for all models (before tuning).}
+    \label{fig:roc}
+    \end{figure}
+    
+    \vspace{3pt}
+    
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.47\textwidth]{confusion_matrix_Logistic_Regression.png}
+    \includegraphics[width=0.47\textwidth]{confusion_matrix_Decision_Tree.png}
+    \caption{Fig. 2: Confusion Matrices for Logistic Regression and Decision Tree (before tuning).}
+    \label{fig:cm_before_part1}
+    \end{figure}
+    
+    \vspace{2pt}
+    
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.47\textwidth]{confusion_matrix_Random_Forest.png}
+    \includegraphics[width=0.47\textwidth]{confusion_matrix_SVM.png}
+    \includegraphics[width=0.47\textwidth]{confusion_matrix_Naive_Bayes.png}
+    \caption{Fig. 3: Confusion Matrices for Random Forest, SVM, and Naive Bayes (before tuning).}
+    \label{fig:cm_before_part2}
+    \end{figure}
+    
 
 \subsection{Model Comparison after Tuning}
 \begin{table}[H]
@@ -151,38 +167,26 @@ Naive Bayes & 0.6496 & 0.4224 & 0.8663 & 0.5679 & 0.8126\\
 \end{tabular}
 \end{table}
 
-% -------- Fig. 3: Confusion matrices (after tuning) in 2-column layout ----------
+% ------------------- Confusion Matrices (After Tuning) -------------------
 \begin{figure}[H]
-\centering
-
-\begin{minipage}[b]{0.30\linewidth}
-    \includegraphics[width=\linewidth]{confusion_matrix_after_tunningNaive_Bayes.png}
-    \caption*{(e) Naive Bayes}
-    \end{minipage}
-\begin{minipage}[b]{0.30\linewidth}
-\includegraphics[width=\linewidth]{confusion_matrix_after_tunningDecision_Tree.png}
-\caption*{(b) Decision Tree}
-\end{minipage}\hfill
-\begin{minipage}[b]{0.30\linewidth}
-\includegraphics[width=\linewidth]{confusion_matrix_after_tunningRandom_Forest.png}
-\caption*{(c) Random Forest}
-\end{minipage}
-
-\vspace{2pt}
-
-\begin{minipage}[b]{0.30\linewidth}
-    \includegraphics[width=\linewidth]{confusion_matrix_after_tunningLogistic_Regression.png}
-    \caption*{(a) Logistic Regression}
-    \end{minipage}\hfill
-\begin{minipage}[b]{0.30\linewidth}
-\includegraphics[width=\linewidth]{confusion_matrix_after_tunningSVM.png}
-\caption*{(d) SVM (RBF)}
-\end{minipage}\hfill
-
-
-\caption{Fig. 3: Confusion Matrices for all models (after tuning).}
-\label{fig:cm_after_tuning}
-\end{figure}
+    \centering
+    \includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningLogistic_Regression.png}
+    \includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningDecision_Tree.png}
+    \caption{Fig. 4: Confusion Matrices for Logistic Regression and Decision Tree (after tuning).}
+    \label{fig:cm_after_part1}
+    \end{figure}
+    
+    \vspace{2pt}
+    
+    \begin{figure}[H]
+    \centering
+    \includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningRandom_Forest.png}
+    \includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningSVM.png}
+    \includegraphics[width=0.47\textwidth]{confusion_matrix_after_tunningNaive_Bayes.png}
+    \caption{Fig. 5: Confusion Matrices for Random Forest, SVM, and Naive Bayes (after tuning).}
+    \label{fig:cm_after_part2}
+    \end{figure}
+    
 
 \section{Discussion}
 Tree-based models like Random Forest outperform linear models by capturing complex feature interactions. Logistic Regression remains valuable for interpretability, while SVM achieves high precision in nonlinear settings. Naive Bayes excels in speed but is sensitive to correlated inputs. Hyperparameter tuning improved recall by roughly 6–8\%.
